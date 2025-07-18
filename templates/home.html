@@ -1,0 +1,250 @@
+{% extends 'master.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>shivsamarjya</title>
+  <!-- Favicon-->
+
+</head>
+
+<body>
+
+
+
+
+  {% block project%}
+  <!-- slides-->
+  <div class="container pt-1">
+
+
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+          aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+          aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+          aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+          <img src="http://127.0.0.1:8000/media/slider/fashion1.jpg" class="d-block w-100 "
+            alt="/media/{{i.slider_img}}">
+        </div>
+        {% for i in list %}
+        <div class="carousel-item ">
+          <img src="media/{{i.slider_img}}" class="d-block w-100 " alt="/media/{{i.slider_img}}">
+        </div>
+        {% endfor %}
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- featured-->
+  <div class="container">
+    <h1><b>Featured</b></h1>
+    <hr class="text-black">
+    <div class="row">
+      {% for i in product%}
+      <div class="col-lg-3 shadow-lg p-3 mb-5 ps-5 bg-white rounded">
+        <div class="card mb-3 ps-4 pt-3 " style="width: 240px; ">
+          <div class="card-title">
+
+            <span class="badge  float-end rounded-pill pt-2 me-1"
+              style="background-color: #ff7722; height: 30px ;width:70px;">₹.{{i.discount|floatformat:2}}</span>
+          </div>
+          <a href=""><img class="card-img-top img-fluid" style="height: 180px;width:180px;"
+              src="/media/{{i.product_img}}" alt=" /media/{{i.product_img}}"></a>
+          <div class="card-body">
+            <h4 class="card-title pt-2"> <b>{{i.product_name}}</b></h4>
+            <p class="card-text text-primary">₹ {{i.sale}}.00 <del class="text-danger">₹ {{i.mrp}}.00</del></p>
+            <div class="d-flex">
+              <form action="/cart_submit/" method="POST">
+                {% csrf_token %}
+
+                <input type="hidden" name="product_id" value="{{i.product_id}}">
+
+                <input type="number" name="cart_quantity" value="1" style="width: 50px;">
+
+                <input type="hidden" name="cart_price" value="{{i.sale}}">
+                <input type="submit" value="Add To Cart" class="btn mt-3"
+                style="background-color: #ff7722;color: aliceblue;">
+                
+              </form>
+
+
+              <!-- <a href="" class="btn  mt-3 " style="background-color: #ff7722;color: aliceblue;">Add To Cart</a> -->
+              <form action="/wishlist_add/" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{i.product_id}}">
+                <button type="submit" class="btn mt-5"
+                  style="background-color: #ff7722; color: aliceblue; border: none; margin: 10px;;">
+                  <i class="fa-regular fa-heart"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+
+      <!---products-->
+      <div class="container">
+        <h1><b>Products</b></h1>
+        <hr class="text-black">
+        <div class="row">
+          {% for i in plist %}
+          <div class="col-lg-3 shadow-lg p-3 mb-5 bg-white rounded">
+
+            <div class="card mb-3 ps-4 pt-3 ms-2" style="width: 240px; ">
+              <div class="card-title">
+
+                <span class="badge  float-end rounded-pill pt-2 me-1"
+                  style="background-color: #ff7722; height: 30px ;width:70px;">₹. {{i.discount|floatformat:2}}</span>
+              </div>
+              <img class="card-img-top img-fluid" style="height: 180px;width:180px;" src="/media/{{ i.product_img }}"
+                alt="/media/{{ i.product_img }}"></a>
+              <div class="card-body">
+
+                <h4 class="card-title pt-2"> <b>{{i.product_name}}</b></h4>
+
+                <p class="card-text text-primary">₹.{{i.sale}}.00 <del class="text-danger">₹.{{i.mrp}}.00</del></p>
+
+                <div class="d-flex">
+                  <form action="/cart_submit/" method="POST">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="product_id" value="{{i.product_id}}">
+
+                    <input type="number" name="cart_quantity" value="1" style="width: 50px;">
+
+                    <input type="hidden" name="cart_price" value="{{i.sale}}">
+                    <input type="submit" value="Add To Cart" class="btn mt-3 "
+                      style="background-color: #ff7722;color: aliceblue;">
+                  </form>
+                  <form action="/wishlist_add/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ i.product_id }}">
+                    <button type="submit" class="btn mt-5" style="background-color: #ff7722; color: white; border: none;">
+                      <i class="fa-regular fa-heart"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+
+
+
+
+      <div class="button text-center">
+        <a href="/shop/"
+       class="btn"  style="background-color: #ff7722;color: aliceblue;">Show All Products</a>
+      </div>
+    </div>
+
+    <!--Categories-->
+
+    <div class="container mt-3 ">
+      <h1 class="mb-3">Categories</h1>
+      <hr class="text-black">
+      <div class="row">
+        {%for i in category%}
+        <div class=" col-lg-3 shadow-lg p-3 mb-5 bg-white rounded">
+          <div class="card mb-3  pt-3 p" >
+                 
+                  <a href=""><img class=" card-img-top" style="height: 300px;" src="/media/{{i.category_img}}"
+            alt="/media/{{i.product_img}}"></a>
+            <div class="card-body">
+              <h4 class="card-title ms-5"> <b>{{i.category_name}}</b></h4>
+
+              <div class="d-flex">
+                <div class="d-flex">
+                  <form action="/cart_submit/" method="POST">
+                    {% csrf_token %}
+    
+                    <input type="hidden" name="product_id" value="{{i.product_id}}">
+                    <input type="hidden" name="cart_quantity" value="1">
+                    <input type="hidden" name="cart_price" value="{{i.sale}}">
+                     <input type="submit" value="Add To Cart" class="btn mt-3 ms-4"
+                    style="background-color: #ff7722;color: aliceblue;">
+                    
+                  </form>
+    
+    
+                  <!-- <a href="" class="btn  mt-3 " style="background-color: #ff7722;color: aliceblue;">Add To Cart</a> -->
+                  <form action="/wishlist_add/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{i.product_id}}">
+                    <button type="submit" class="btn mt-3"
+                      style="background-color: #ff7722; color: aliceblue; border: none; margin: 10px;;">
+                      <i class="fa-regular fa-heart"></i>
+                    </button>
+                    </form>
+                    </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+
+      </div>
+
+      <!--Brands-->
+      <div class="container mt-4">
+        <h1>Brands</h1>
+        <hr class="text-black">
+
+
+        <div class="row mb-3 shadow-lg p-3 mb-5 bg-white rounded">
+
+          {% for i in brand %}
+          <div class="col-lg shadow-lg p-3 mb-5 bg-white rounded">
+            <img src="/media/{{ i.brands_img }}" alt="" class="img-fluid pt-2 pb-2"
+              style="  height: 200px; width: 300px;">
+          </div>
+          {% endfor %}
+
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+
+  {% endblock %}
+
+  
+
+</body>
+
+</html>

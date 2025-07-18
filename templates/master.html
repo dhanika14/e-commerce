@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shivsamarjya</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="static/assets/favicon.ico" />
+  <!-- Bootstrap icons-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+
+
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="static/css/styles.css" rel="stylesheet" />
+
+
+</head>
+
+<body>
+  <div class="container-fluid" style="height:185px; width: 100%; background-color: #ff7722;">
+
+    <div class="row">
+      <div class="col-lg-4 ps-5">
+        <img src="/static/assets/shivsamarjya.jpg" alt=""
+          style="height: 100px; width: 350px; margin-top: 50px; margin-left: 80px;">
+      </div>
+      <div class="col-lg-4">
+
+        <div class="input-group " style="padding-top: 76px;">
+          <span class="input-group-text "><i class="fa-solid fa-magnifying-glass"
+              style="color: #ff7722; font-size: 25px;"></i></span>
+          <input type="text" class="form-control" placeholder="Search">
+
+        </div>
+      </div>
+
+      <div class="col-lg-4 pt-3 ">
+        {% if user_name %}
+        <a href="/logout/" style="color: white; font-size: 17px; margin-right:10px;" class="btn "><b>Logout</b></a>
+
+        <p style="color: white; font-size: 17px; display: inline;">
+          <i class="fas fa-user text-light" style="font-size: 17px; margin-right: 5px;"></i><b> {{ user_name }}</b>
+        </p>
+
+
+        {% else %}
+        <a href="/login/" style="margin-left:260px; color: white; font-size: 17px;" class="btn"> <b>login</b></a>
+        <a href="/registration/" style="color: white; font-size: 17px;" class="btn"> <b>Register</b></a>
+       
+        {% endif %}
+        <a href="/wishlist/" style="margin-left:20px; color: white; font-size: 17px;" class="btn"> <b>wishlist</b></a>
+
+
+        <p style="font-size: 20px; color: white; margin-left: 100px;">
+          <i class="fas fa-envelope text-light" style="font-size: 20px;"></i><b>
+            info.shivsamarajya@gmail.com</b>
+        </p>
+
+        <p style="font-size: 20px; color: white;  margin-left: 100px;"><i class=" fas fa-phone text-light "
+            style="font-size: 20px;"></i> <b>+91 9503933339 </b></p>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn " data-bs-toggle="modal" data-bs-target="#exampleModal"
+          style="margin-left:100px; color: white; font-size: 20px;" class="btn"><strong>item(s) </strong></a>
+          <i class="fa-solid fa-caret-down" style="color: #e9ecf1;"></i></button>
+
+
+        <!-- Modal -->
+
+
+
+
+        <!--<a href="/" style="margin-left:100px; color: white; font-size: 20px;" class="btn"><strong>0 item(s) </strong></a>
+      <i class="fa-solid fa-caret-down" style="color: #e9ecf1;"></i>-->
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Product Added to Cart</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+
+
+                
+                
+                {% for i in cart %}
+                <div class="row text-center align-items-center border-bottom py-2">
+                  <!-- Product Image -->
+                  <div class="col-lg">
+                    <img src="/media/{{i.product_img}}" class="img-fluid" alt="Product Image" style="max-width: 60px;">
+                  </div>
+                
+                  <!-- Product Name -->
+                  <div class="col-lg">{{ i.product_name }}</div>
+                
+                  <!-- Quantity -->
+                  <div class="col-lg">{{ i.cart_quantity }}</div>
+                
+                  <!-- Price -->
+                  <div class="col-lg">₹{{ i.sale_price }}</div>
+                
+                 
+              
+                  <!-- Remove Button -->
+                  <div class="col-lg">
+                    <form method="POST" action="/cart_delete{{i.cart_id}}/">
+                      {% csrf_token %}
+                      
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                {% empty %}
+                <div class="text-center mt-3">Your cart is empty.</div>
+                {% endfor %}
+                
+                
+              </div>
+              <div class="modal-footer">
+                <a href="/view_cart/" class="btn text-light" target="_self" style="background-color: #ff7722;">
+                  <i class="fa-solid fa-cart-shopping text-black me-2"></i>View Cart
+               </a>
+               
+             
+               <a href="/checkout/" class="btn text-light" style="background-color: #ff7722;">💳 Checkout</a>
+
+              </div>
+            </div>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+  <nav class="navbar navbar-expand-sm navbar-dark " style="background-color: brown;">
+    <div class="container-fluid pt-3">
+
+      <div class="collapse navbar-collapse" id="mynavbar">
+        <ul class="navbar-nav ">
+          <li class="nav-item  ms-5" style="font-size: 20px;">
+            <a class="nav-link text-light" href="/"><span class="fa fa-home"></span></a>
+          </li>
+          <li class="nav-item dropdown" style="font-size: 20px;">
+            <a class="nav-link dropdown-toggle  text-light" href="#" role="button"
+              data-bs-toggle="dropdown"><B>CATEGORIES</B></a>
+              <ul class="dropdown-menu">
+                {% for i in category %}
+                  <li>
+                    <a href="/{{ i.category_name }}/" class="dropdown-item">
+                      {{ i.category_name }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+              
+              
+          </li>
+
+          <li class="nav-item dropdown" style="font-size: 20px;">
+            <a class="nav-link dropdown-toggle  text-light" href="#" role="button"
+              data-bs-toggle="dropdown"><B>BRANDS</B></a>
+            <ul class="dropdown-menu">
+              {% for i in brand%}
+
+              <li><a class="dropdown-item" href="#"><img src="/media/{{i.brands_img}}" alt=""
+                    style="height: 50px; width: 100px;"></a></li>
+
+              {%endfor%}
+
+            </ul>
+          </li>
+          <li class="nav-item" style="font-size: 20px;">
+            <a class="nav-link  text-light" href="/shop/"><B>SHOP</B></a>
+          </li>
+          <li class="nav-item" style="font-size: 20px;">
+            <a class="nav-link  text-light" href="/about/"><B>ABOUT-US</B> </a>
+          </li>
+          <li class="nav-item" style="font-size: 20px;">
+            <a class="nav-link  text-light" href="/contactus/"> <B>CONTACT-US</B> </a>
+          </li>
+
+
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+
+  {% block project %}
+
+  {%endblock%}
+
+
+  <!---footer-->
+  <!-- Footer -->
+  <footer class="text-center text-lg-start text-muted" style="background-color: #00072D;">
+    <!-- Section: Social media -->
+    <section class="d-flex justify-content-center justify-content-lg-between p-3 border-bottom">
+      <!-- Left -->
+      <div class="me-5 d-none d-lg-block">
+        <span style="font-size: 20px; color: white;"> <b>Get connected with us on social networks:</b></span>
+      </div>
+      <!-- Left -->
+
+      <!-- Right -->
+      <div>
+        <a href="" class="me-4 " style="font-size: 20px;  color: white;">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="" class="me-4 " style="font-size: 20px;  color: white;">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="" class="me-4 " style="font-size: 20px;  color: white;">
+          <i class="fab fa-google"></i>
+        </a>
+        <a href="" class="me-4 t" style="font-size: 20px;  color: white;">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="" class="me-4 " style="font-size: 20px;  color: white;">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="" class="me-4 " style="font-size: 20px;  color: white;">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <!-- Right -->
+    </section>
+    <!-- Section: Social media -->
+
+    <!-- Section: Links  -->
+
+    <section class="">
+      <div class="container text-center text-md-start mt-3">
+        <!-- Grid row -->
+        <div class="row mt-3">
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-3 col-xl-2 mx-auto ">
+            <!-- Links -->
+            <h6 class="text-uppercase fw-bold mb-4" style="font-size: 20px;  color: white;">
+              Information
+            </h6>
+            <p>
+              <a href="/about/" style="font-size: 20px;  color: white;">About Us</a>
+            </p>
+            <p>
+              <a href="#!" style="font-size: 20px;  color: white;">Delivery Information</a>
+            </p>
+            <p>
+              <a href="#!" style="font-size: 20px;  color: white;">Privacy & Policy</a>
+            </p>
+            <p>
+              <a href="#!" style="font-size: 20px; color: white;">Terms & Conditions</a>
+            </p>
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-3 col-xl-2 mx-auto ">
+            <!-- Links -->
+            <h6 class="text-uppercase fw-bold mb-4" style="font-size: 20px;  color: white;">
+              Customer Services
+            </h6>
+            <p>
+              <a href="/contactus/" style="font-size: 20px;  color: white;">Contact Us</a>
+            </p>
+
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-3 col-xl-2 mx-auto ">
+            <!-- Links -->
+            <h6 class="text-uppercase fw-bold mb-4" style="font-size:20px;  color: white;">
+              My Account
+            </h6>
+            <p>
+              <a href="#!" style="font-size: 20px;  color: white;">My Account</a>
+            </p>
+            <p>
+              <a href="#!" style="font-size: 20px;  color: white;"> Wish List</a>
+            </p>
+            <p>
+              <a href="#!" style="font-size: 20px;  color: white;">OrderHistory</a>
+            </p>
+
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-md-0 ">
+            <!-- Links -->
+            <h6 class="text-uppercase fw-bold mb-4" style="font-size: 20px;  color: white;">Contact Details</h6>
+            <p style="font-size: 20px;  color: white;"> <i class="fa-solid fa-location-dot "
+                style="font-size: 20px;  color: white;"></i> Shivsamarjya shop,Koregaon,Satara</p>
+            <p style="font-size: 20px;  color: white;">
+              <i class="fas fa-envelope " style="font-size: 20px; color: white;"></i>
+              info.shivsamarajya@gmail.com
+            </p>
+            <p style="font-size: 20px;  color: white;"><i class="fas fa-phone "
+                style="font-size: 20px;  color: white;"></i>+91 9503933339</p>
+
+          </div>
+          <!-- Grid column -->
+        </div>
+        <!-- Grid row -->
+      </div>
+    </section>
+    <hr class="text-light">
+    <!-- Section: Links  -->
+
+    <!-- Copyright -->
+    <div class="text-center" style="font-size: 20px ;  color: white;">
+      © Copyright 2023 by<b style="color: #ff7722;"> Shiv Samarajya</b> All Rights Resereved
+
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!-- Footer -->
+
+
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <!-- Core theme JS-->
+  <script src="js/scripts.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,163 @@
+{% extends 'master.html' %}
+
+{% block project %}
+<div class="container mt-4">
+    <h2>Checkout</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+
+            <!-- Personal Details -->
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Your Personal Details</h5>
+                    <div class="mb-3">
+                        <label class="form-label" for="first_name">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">E-Mail</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="phone">Telephone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Your Address</h5>
+                    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Payment Method</h5>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" value="cod" id="cod" required>
+                        <label class="form-check-label" for="cod">Cash On Delivery</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" value="online" id="online" required>
+                        <label class="form-check-label" for="online">Online Payment</label>
+                    </div>
+
+                    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                        Show QR Code
+                    </button>
+
+                    <!-- Payment Modal -->
+                    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="paymentModalLabel">Online Payment</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="modal-body text-center">
+                                    <img src="/static/assets/scanner.jpg" class="img-fluid" alt="Scan QR to Pay" style="width: 600px; height: 470px;">
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">I Paid</button>
+                                
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Modal -->
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Shopping Cart -->
+        <div class="container">
+            <h2 class="text-center mt-5 mb-4">Shopping Cart</h2>
+
+            <table class="table table-bordered text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in cart %}
+                    <tr>
+                        <td><img src="/media/{{ i.product_img }}" width="50" class="rounded border"></td>
+                        <td>{{ i.product_name }}</td>
+                        <td>{{ i.cart_quantity }}</td>
+                        <td>₹ {{ i.sale_price }}</td>
+                        <td>₹ {{ i.total_price|floatformat:2 }}</td>
+                        <td>
+                            <form method="POST" action="/cart_delete{{ i.cart_id }}/">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-danger">Your cart is empty.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Total -->
+            <div class="row mt-3">
+                <div class="col-md-6 offset-md-6">
+                    <table class="table border">
+                        <tr>
+                            <td><b>Total:</b></td>
+                            <td><b>₹ {{ total_price|floatformat:2 }}</b></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Coupon Code -->
+            <div class="card mt-4 p-3">
+                <h5>Use Coupon Code</h5>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="coupon_code" name="coupon_code">
+                    <button class="btn btn-warning" type="button">Apply Coupon</button>
+                </div>
+            </div>
+
+            <!-- Terms -->
+            <div class="form-check mt-4">
+                <input class="form-check-input" type="checkbox" id="terms" name="agree_terms" required>
+                <label class="form-check-label" for="terms">
+                    I have read and agree to the <a href="#" class="text-primary">Terms & Conditions</a>
+                </label>
+            </div>
+
+            <!-- Confirm Button -->
+            <button type="submit" class="btn btn-success my-4">Confirm Order</button>
+
+        </div> <!-- End Shopping Cart -->
+    </form>
+</div> <!-- Checkout Container End -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

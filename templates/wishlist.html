@@ -1,0 +1,71 @@
+{% extends 'master.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; margin: 20px;">
+
+    {% block project %}
+    <div class="container" style="margin-right: 200px;">
+    <h2 style="text-align: center; color: #333; " class="mt-4 mb-4">My Wish List</h2>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%" 
+           style="border-collapse: collapse; text-align: center; margin:0px 300px 200px 100px">
+        <thead>
+            <tr style="background-color: #f4f4f4;">
+                <th style="padding: 10px; border: 1px solid #ddd;">Image</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Product Name</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Price</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in wishlist %}
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    {% if i.product_id.product_img %}
+                    <img src="/media/{{ i.product_id.product_img }}" alt="Product Image" width="50px" 
+                         style="border-radius: 5px; border: 1px solid #ccc;">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ i.product_id.product_name }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; color: rgb(0, 0, 0);">₹ {{ i.product_id.sale }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+
+                    <div style="display: flex; align-items: center; gap: 10px;">  
+                        <form action="/cart_submit/" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ i.product_id.product_id }}">
+                            <input type="hidden" name="cart_quantity" value="1">
+                            <input type="hidden" name="cart_price" value="{{ i.product_id.sale }}">
+                            <button type="submit" class="btn" 
+                                style="background-color: #ff7722; color: aliceblue; padding: 5px 10px; border: none; cursor: pointer; margin: 20px;">
+                                Add To Cart
+                            </button>
+                        </form>
+                    
+                        <a href="/wishlistdelete/{{ i.wish_id }}" 
+                            style="padding: 5px 10px; background-color: rgb(241, 91, 91); color: white; text-decoration: none; 
+                                    border-radius: 3px; display: inline-block;">
+                            Remove
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    {% endblock %}
+
+</body>
+</html>

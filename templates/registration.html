@@ -1,0 +1,278 @@
+{% extends 'master.html' %}
+
+{% block project %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Account</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row mb-3">
+            <!-- Left Side: Registration Form -->
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <h3 class="mb-3 text-center">Register Account</h3>
+                    <p>If you already have an account, please login at the <a href="/login"><b>Login Page</b> </a>.</p>
+
+                    <form action="" method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Full Name (English)</label>
+                            <input type="text"  name="fullNameEng" id="fullNameEng" class="form-control"
+                                placeholder="Enter Full Name In English">
+                            <span class="error" id="nameError"></span>
+                            
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Full Name (Marathi)</label>
+                            <input type="text" name="fullNameMarathi" id="fullNameMarathi" class="form-control"
+                                placeholder="Enter Full Name In Marathi">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mobile No</label>
+                            <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile Number">
+                            <span class="error" id="mobileError"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Birth Date</label>
+                            <input type="date" name="birthDate" id="birthDate" class="form-control">
+                            <span class="error" id="birthDateError"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Near by Franchise</label>
+
+                            <select name="franchise"  id="franchise" class="form-control">
+                                <option value=""> Select </option>
+                                {% for franchise in franchises %}
+
+                                <option value="{{franchise.franchise_id}}">{{franchise.franchise_name}}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">State</label>
+
+
+                            <select name="state" id="state" class="form-control">
+                                <option value="">Select State</option>
+                                {% for state in states %}
+                                <option value="{{ state.state_id }}">{{ state.state_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">District</label>
+
+
+
+                            <select name="district" id="district" class="form-control">
+                                <option value="">Select District</option>
+                                {% for district in districts %}
+                                <option value="{{ district.district_id }}">{{ district.district_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Taluka</label>
+
+                            <!-- Taluka Dropdown -->
+
+                            <select name="taluka" id="taluka" class="form-control">
+                                <option value="">Select Taluka</option>
+                                {% for taluka in talukas %}
+                                <option value="{{ taluka.taluka_id }}">{{ taluka.taluka_name }}</option>
+                                {% endfor %}
+                            </select>
+
+
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Village</label>
+
+
+
+
+
+                            <select name="village" id="village" class="form-control">
+                                <option value="">Select Village</option>
+                                {% for village in villages %}
+                                <option value="{{ village.village_id }}">{{ village.village_name }}</option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Pin Code</label>
+                            <input type="text" name="pinCode" id="pinCode" class="form-control" placeholder="Pin Code">
+                            <span class="error" id="pinCodeError"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">E-Mail</label>
+                            <input type="email" name="email" id="email" class="form-control" placeholder="E-Mail">
+                            <span class="error" id="emailError"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+                            <span class="error" id="passwordError"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control"
+                                placeholder="Password Confirm">
+                            <span class="error" id="confirmPasswordError"></span>
+                        </div>
+
+                        <button type="submit" class="btn  w-100 text-light" style="background-color:#ff7722;"
+                            onclick="validateForm()">Register</button>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+            <!-- Right Side: Account Information -->
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <h4>Account</h4>
+                    <div class="list-group">
+                        <ul class="list-item" style="font-size: 18px; list-style: none;">
+                            <li><a href="/login" class="text-dark">Login</a></li>
+                            <li><a href="/login" class="text-dark">Forgotten Password</a></li>
+                            <li><a href="/login" class="text-dark">My Account</a></li>
+                            <li><a href="/login" class="text-dark">Wish List</a></li>
+                            <li><a href="/login" class="text-dark">Order History</a></li>
+                            <li><a href="/login" class="text-dark">Returns</a></li>
+                        </ul>
+
+
+                        <h4>Apply To Card</h4>
+                        <p>Saving at the supermarket used to be simpler: Everyone got the sale price. Then, stores began
+                            offering
+                            loyalty cards, which required customers to scan a plastic card or key in their phone number
+                            at checkout
+                            to activate discounts. Now, many grocery store chains are replacing those loyalty cards with
+                            smartphone
+                            apps.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            function validateForm() {
+                let isValid = true;
+
+                // Reset previous errors
+                document.querySelectorAll('.error').forEach(e => e.innerText = "");
+
+                let name = document.getElementById("fullNameEng").value;
+                let mobile = document.getElementById("mobile").value;
+                let birthDate = document.getElementById("birthDate").value;
+                let pinCode = document.getElementById("pinCode").value;
+                let email = document.getElementById("email").value;
+                let password = document.getElementById("password").value;
+                let confirmPassword = document.getElementById("confirmPassword").value;
+
+                if (name.trim() === "") {
+                    document.getElementById("nameError").innerText = "Full Name is required";
+                    isValid = false;
+                }
+
+                if (mobile.trim() === "" || !/^\d{10}$/.test(mobile)) {
+                    document.getElementById("mobileError").innerText = "Enter a valid 10-digit mobile number";
+                    isValid = false;
+                }
+
+                if (birthDate.trim() === "") {
+                    document.getElementById("birthDateError").innerText = "Birth Date is required";
+                    isValid = false;
+                }
+
+                if (pinCode.trim() === "" || !/^\d{6}$/.test(pinCode)) {
+                    document.getElementById("pinCodeError").innerText = "Enter a valid 6-digit Pin Code";
+                    isValid = false;
+                }
+
+                if (!/\S+@\S+\.\S+/.test(email)) {
+                    document.getElementById("emailError").innerText = "Enter a valid email";
+                    isValid = false;
+                }
+
+                if (password.length < 6) {
+                    document.getElementById("passwordError").innerText = "Password must be at least 6 characters";
+                    isValid = false;
+                }
+
+                if (password !== confirmPassword) {
+                    document.getElementById("confirmPasswordError").innerText = "Passwords do not match";
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    alert("Registration Successful!");
+                }
+            }
+
+
+        </script>
+    </div>
+
+    {% endblock %}
+
+
+</body>
+
+</html>

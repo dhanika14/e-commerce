@@ -1,0 +1,94 @@
+{% extends 'master.html' %}
+
+{% block project %}
+
+<div class="container-fluid">
+    <h1 class="text-center mt-5">Account Login</h1> 
+    <hr class="text-black">
+    <div class="row shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="col-lg-4" style="margin-left: 40px;">
+            <div class="card border border-light" style="width: 18rem;">
+                <h5>New Customer</h5>
+                <hr>
+                <div class="card-body">
+                    <h5 class="card-title">Register Account</h5>
+                    <p class="card-text">By creating an account you will be able to shop faster, be up to date on an
+                        order's status, and keep track of the orders you have previously made</p>
+                    <a href="/registration" class="btn text-light" style="background-color:#ff7722;">Register</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" style="margin-top: 30px;">
+            <h3 class="subtitle"><span>Login Customer</span></h3>
+            <form id="loginForm" action="" method="POST" class="form-horizontal">
+                {% csrf_token %}
+                <input type="hidden" name="_token" value="XCAb8bMVKoZ4bdTPl0XzK0GJvt4uFGv1L8REYuyT">
+                
+                <div class="form-group">
+                    <label class="control-label" for="input-email"><b>E-Mail Address OR Mobile Number</b></label>
+                    <input type="text" name="email" id="input-email" class="form-control" 
+                        placeholder="E-Mail Address or Mobile Number" required />
+                    <small class="text-danger" id="email-error" style="display:none;">Please enter a valid email address.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label" for="input-password"><b>Password</b></label>
+                    <input type="password" name="password" id="input-password" class="form-control" 
+                        placeholder="Password" required />
+                    <small class="text-danger" id="password-error" style="display:none;">Password must be at least 6 characters long.</small>
+                </div>
+                
+                <input type="submit" value="Login" class="btn text-light mt-3" style="background-color: #ff7722;" />
+            </form>
+        </div>
+
+        <aside id="column-right" class="col-sm-3 hidden-xs" style="margin-right: 20px;">
+            <h3 class="subtitle mt-3 ms-3"><span>Account</span></h3>
+            <div class="list-group">
+                <ul class="list-item" style="font-size:18px; list-style: none;">
+                    <li><a href="/login" class="text-dark btn">Login</a></li>
+                    <li><a href="/login" class="text-dark btn">My Account</a></li>
+                    <li><a href="/login" class="text-dark btn">Wish List</a></li>
+                    <li><a href="/login" class="text-dark btn">Order History</a></li>
+                    <li><a href="/login" class="text-dark btn">Returns</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        let isValid = true;
+        
+        // Email Validation
+        const email = document.getElementById('input-email').value;
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const emailError = document.getElementById('email-error');
+        
+        if (!emailPattern.test(email)) {
+            emailError.style.display = 'block';
+            isValid = false;
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        // Password Validation
+        const password = document.getElementById('input-password').value;
+        const passwordError = document.getElementById('password-error');
+        
+        if (password.length < 6) {
+            passwordError.style.display = 'block';
+            isValid = false;
+        } else {
+            passwordError.style.display = 'none';
+        }
+
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
+
+{% endblock %}

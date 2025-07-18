@@ -1,0 +1,91 @@
+{% extends 'master.html' %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Document</title>
+</head>
+
+
+
+<body>
+  {% block project %}
+
+  <div class="container-fluid">
+    <h1 class="text-center">Cosmetic</h1>
+    <hr class="text-black">
+    <div class="row">
+
+      <div class="col-lg-3">
+        <h1>Categories</h1>
+        <hr class="text-black">
+        <ul style="list-style: none;">
+          {% for i in category %}
+          <hr class="text-black">
+              <li><a href="/{{ i.category_name }}/" class="btn" >{{ i.category_name }}</li></a>
+
+              {% endfor %}
+          
+        </ul>
+      </div>
+
+      <div class="col-lg-9">
+
+        <div class="row">
+          
+          {% for i in cosmetic%}
+         
+          <div class="col-lg-3 shadow-lg p-3 mb-5 ps-5 bg-white rounded">
+            <div class="card mb-3 ps-4 pt-3 " style="width: 240px; ">
+              <div class="card-title">
+    
+                <span class="badge  float-end rounded-pill pt-2 me-1"
+                  style="background-color: #ff7722; height: 30px ;width:70px;">₹{{i.discount|floatformat:2}}</span>
+              </div>
+              <a href=""><img class="card-img-top img-fluid" style="height: 180px;width:180px;"
+                  src="/media/{{i.product_img}}" alt=" /media/{{i.product_img}}"></a>
+              <div class="card-body">
+                <h4 class="card-title pt-2"> <b>{{i.product_name}}</b></h4>
+                <p class="card-text text-primary">₹ {{i.sale}}.00 <del class="text-danger">₹ {{i.mrp}}.00</del></p>
+                <div class="d-flex">
+                  <form action="/cart_submit/" method="POST">
+                    {% csrf_token %}
+    
+                    <input type="hidden" name="product_id" value="{{i.product_id}}">
+                    <input type="number" name="cart_quantity" value="1" style="width: 50px;">
+                    <input type="hidden" name="cart_price" value="{{i.sale}}">
+                    <input type="hidden" name="redirect_url" value="{{ request.path }}">
+                     <input type="submit" value="Add To Cart" class="btn mt-3"
+                    style="background-color: #ff7722;color: aliceblue;">
+                    
+                  </form>
+    
+    
+                  <!-- <a href="" class="btn  mt-3 " style="background-color: #ff7722;color: aliceblue;">Add To Cart</a> -->
+                  <form action="/wishlist_add/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{i.product_id}}">
+                    <button type="submit" class="btn mt-5"
+                      style="background-color: #ff7722; color: aliceblue; border: none; margin: 10px;;">
+                      <i class="fa-regular fa-heart"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+    </div>
+    </div>
+
+
+
+  {% endblock %}
+
+
+</body>
+
+</html>
