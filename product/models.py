@@ -30,6 +30,7 @@ class Product(models.Model):
     op_value=models.CharField(max_length=255 , null=True)
     mfg_date=models.DateField(max_length=255 , null=True)
     exp_date=models.DateField(max_length=255 , null=True)
+    stock=models.IntegerField( default='0')
 
 
 

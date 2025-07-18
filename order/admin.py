@@ -1,9 +1,9 @@
-from django.contrib import admin  
+from django.contrib import admin   # type: ignore
 from .models import Order  
 
-class OrderAdmin(admin.ModelAdmin):  
-    list_display = ('order_id', 'c_id', 'product_id', 'price', 'quantity', 'order_date')  
-    list_filter = ('c_id', 'product_id',)  
-    search_fields = ('order_id',)  
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('order_id', 'c_id', 'product_id', 'quantity', 'price', 'stock_at_order_time', 'current_stock', 'order_date')
 
-admin.site.register(Order, OrderAdmin)  
+    
+
+admin.site.register(Order, OrderAdmin)

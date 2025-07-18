@@ -24,23 +24,23 @@
         <ul style="list-style: none;">
           {% for i in category %}
           <hr class="text-black">
-              <li><a href="/{{ i.category_name }}/" class="btn" >{{ i.category_name }}</li></a>
+          <li><a href="/{{ i.category_name }}/" class="btn">{{ i.category_name }}</li></a>
 
-              {% endfor %}
-          
+          {% endfor %}
+
         </ul>
       </div>
 
       <div class="col-lg-9">
 
         <div class="row">
-          
+
           {% for i in grocery%}
-         
+
           <div class="col-lg-3 shadow-lg p-3 mb-5 ps-5 bg-white rounded">
             <div class="card mb-3 ps-4 pt-3 " style="width: 240px; ">
               <div class="card-title">
-    
+
                 <span class="badge  float-end rounded-pill pt-2 me-1"
                   style="background-color: #ff7722; height: 30px ;width:70px;">₹{{i.discount|floatformat:2}}</span>
               </div>
@@ -52,17 +52,25 @@
                 <div class="d-flex">
                   <form action="/cart_submit/" method="POST">
                     {% csrf_token %}
-    
+
                     <input type="hidden" name="product_id" value="{{i.product_id}}">
                     <input type="number" name="cart_quantity" value="1" style="width: 50px;">
                     <input type="hidden" name="cart_price" value="{{i.sale}}">
                     <input type="hidden" name="redirect_url" value="{{ request.path }}">
-                     <input type="submit" value="Add To Cart" class="btn mt-3"
-                    style="background-color: #ff7722;color: aliceblue;">
-                    
+                    {% if i.stock > 0 %}
+                    <span style="color: green;"><b>In Stock <!--({{ i.stock }})--></b></span>
+                    <button type="submit" class="btn mt-3" style="background-color: #ff7722;color: aliceblue;">Add to
+                      Cart</button>
+                    {% else %}
+                    <span style="color: red;"><b>Out of Stock</b></span>
+                    <button type="submit" disabled class="btn mt-3" style="background-color: #ff7722;color: aliceblue;">
+                      Add To Cart</button>
+
+                    {% endif %}
+
                   </form>
-    
-    
+
+
                   <!-- <a href="" class="btn  mt-3 " style="background-color: #ff7722;color: aliceblue;">Add To Cart</a> -->
                   <form action="/wishlist_add/" method="POST">
                     {% csrf_token %}
@@ -77,12 +85,12 @@
             </div>
           </div>
           {% endfor %}
-    </div>
-    </div>
+        </div>
+      </div>
 
 
 
-  {% endblock %}
+      {% endblock %}
 
 
 </body>

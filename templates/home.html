@@ -75,7 +75,11 @@
           <a href=""><img class="card-img-top img-fluid" style="height: 180px;width:180px;"
               src="/media/{{i.product_img}}" alt=" /media/{{i.product_img}}"></a>
           <div class="card-body">
-            <h4 class="card-title pt-2"> <b>{{i.product_name}}</b></h4>
+            <h4 class="card-title pt-2"
+              style="display: block; width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+              title="{{ i.product_name }}">
+              <span style="font-weight: bold;">{{ i.product_name }}</span>
+            </h4>
             <p class="card-text text-primary">₹ {{i.sale}}.00 <del class="text-danger">₹ {{i.mrp}}.00</del></p>
             <div class="d-flex">
               <form action="/cart_submit/" method="POST">
@@ -86,9 +90,18 @@
                 <input type="number" name="cart_quantity" value="1" style="width: 50px;">
 
                 <input type="hidden" name="cart_price" value="{{i.sale}}">
-                <input type="submit" value="Add To Cart" class="btn mt-3"
-                style="background-color: #ff7722;color: aliceblue;">
-                
+                <input type="hidden" name="redirect_url" value="{{ request.path }}">
+                {% if i.stock > 0 %}
+                <span style="color: green;"><b>In Stock <!--({{ i.stock }})--></b></span>
+                <button type="submit" class="btn mt-3" style="background-color: #ff7722;color: aliceblue;">Add to
+                  Cart</button>
+                {% else %}
+                <span style="color: red;"><b>Out of Stock</b></span>
+                <button type="submit" disabled class="btn mt-3" style="background-color: #ff7722;color: aliceblue;"> Add
+                  To Cart</button>
+
+                {% endif %}
+
               </form>
 
 
@@ -126,8 +139,11 @@
                 alt="/media/{{ i.product_img }}"></a>
               <div class="card-body">
 
-                <h4 class="card-title pt-2"> <b>{{i.product_name}}</b></h4>
-
+                <h4 class="card-title pt-2"
+                  style="display: block; width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                  title="{{ i.product_name }}">
+                  <span style="font-weight: bold;">{{ i.product_name }}</span>
+                </h4>
                 <p class="card-text text-primary">₹.{{i.sale}}.00 <del class="text-danger">₹.{{i.mrp}}.00</del></p>
 
                 <div class="d-flex">
@@ -139,13 +155,24 @@
                     <input type="number" name="cart_quantity" value="1" style="width: 50px;">
 
                     <input type="hidden" name="cart_price" value="{{i.sale}}">
-                    <input type="submit" value="Add To Cart" class="btn mt-3 "
-                      style="background-color: #ff7722;color: aliceblue;">
+                    <input type="hidden" name="redirect_url" value="{{ request.path }}">
+                    {% if i.stock > 0 %}
+                    <span style="color: green;"><b>In Stock <!--({{ i.stock }})--></b></span>
+                    <button type="submit" class="btn mt-3" style="background-color: #ff7722;color: aliceblue;">Add to
+                      Cart</button>
+                    {% else %}
+                    <span style="color: red;"><b>Out of Stock</b></span>
+                    <button type="submit" disabled class="btn mt-3" style="background-color: #ff7722;color: aliceblue;">
+                      Add To Cart</button>
+
+                    {% endif %}
+
                   </form>
                   <form action="/wishlist_add/" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="product_id" value="{{ i.product_id }}">
-                    <button type="submit" class="btn mt-5" style="background-color: #ff7722; color: white; border: none;">
+                    <button type="submit" class="btn mt-5"
+                      style="background-color: #ff7722; color: white; border: none;">
                       <i class="fa-regular fa-heart"></i>
                     </button>
                   </form>
@@ -164,8 +191,7 @@
 
 
       <div class="button text-center">
-        <a href="/shop/"
-       class="btn"  style="background-color: #ff7722;color: aliceblue;">Show All Products</a>
+        <a href="/shop/" class="btn" style="background-color: #ff7722;color: aliceblue;">Show All Products</a>
       </div>
     </div>
 
@@ -177,10 +203,10 @@
       <div class="row">
         {%for i in category%}
         <div class=" col-lg-3 shadow-lg p-3 mb-5 bg-white rounded">
-          <div class="card mb-3  pt-3 p" >
-                 
-                  <a href=""><img class=" card-img-top" style="height: 300px;" src="/media/{{i.category_img}}"
-            alt="/media/{{i.product_img}}"></a>
+          <div class="card mb-3  pt-3 p">
+
+            <a href=""><img class=" card-img-top" style="height: 300px;" src="/media/{{i.category_img}}"
+                alt="/media/{{i.product_img}}"></a>
             <div class="card-body">
               <h4 class="card-title ms-5"> <b>{{i.category_name}}</b></h4>
 
@@ -188,16 +214,16 @@
                 <div class="d-flex">
                   <form action="/cart_submit/" method="POST">
                     {% csrf_token %}
-    
+
                     <input type="hidden" name="product_id" value="{{i.product_id}}">
                     <input type="hidden" name="cart_quantity" value="1">
                     <input type="hidden" name="cart_price" value="{{i.sale}}">
-                     <input type="submit" value="Add To Cart" class="btn mt-3 ms-4"
-                    style="background-color: #ff7722;color: aliceblue;">
-                    
+                    <input type="submit" value="Add To Cart" class="btn mt-3 ms-4"
+                      style="background-color: #ff7722;color: aliceblue;">
+
                   </form>
-    
-    
+
+
                   <!-- <a href="" class="btn  mt-3 " style="background-color: #ff7722;color: aliceblue;">Add To Cart</a> -->
                   <form action="/wishlist_add/" method="POST">
                     {% csrf_token %}
@@ -206,8 +232,8 @@
                       style="background-color: #ff7722; color: aliceblue; border: none; margin: 10px;;">
                       <i class="fa-regular fa-heart"></i>
                     </button>
-                    </form>
-                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -243,7 +269,7 @@
 
   {% endblock %}
 
-  
+
 
 </body>
 

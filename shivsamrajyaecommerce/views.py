@@ -158,8 +158,9 @@ def home(request):
     sliderdata = Slider.objects.all()
     categorydata = Category.objects.all()
     branddata = Brands.objects.all()
-    productdata = Product.objects.all()[:4]  
-    plist = Product.objects.all()[86:90]  
+    productdata = Product.objects.all()[4:8]
+    plist = Product.objects.all()[:4]  #feature
+
 
     # Calculate discount
     for product in productdata:
@@ -355,7 +356,7 @@ def general(request):
     categorydata = Category.objects.all()
     branddata = Brands.objects.all()
     wishlistdata = Wishlist.objects.filter(c_id=customer)
-    productdata=Product.objects.all()[18:92]  
+    productdata=Product.objects.all()[:13]  
 
     for product in productdata:
        product.discount = "{:.2f}".format(float(product.mrp) - float(product.sale))
@@ -660,8 +661,7 @@ def shop(request):
     return render(request, 'shop.html', data)
 
 def stationary(request):
-    # if 'user_id' not in request.session: 
-        # return redirect("/")  
+    
 
     user_id = request.session.get('user_id')  
 
@@ -690,6 +690,7 @@ def stationary(request):
         })
 
     categorydata = Category.objects.all()
+    stock=Product.objects.all()
     branddata = Brands.objects.all()
     wishlistdata = Wishlist.objects.filter(c_id=customer)
     productdata = Product.objects.filter(category__category_name="Stationary")
@@ -706,7 +707,8 @@ def stationary(request):
         "cart": cart_items,
         "total_price": total_price,
         "wishlist": wishlistdata,
-        "stationary":productdata
+        "stationary":productdata,
+        "stock":stock
     }
 
     return render(request, 'stationary.html', data)
@@ -824,6 +826,9 @@ def view_cart(request):
             'sale_price': sale_price,
             'total_price': item_total,
             'cart_id': item.cart_id,
+            'mfg_date': item.product_id.mfg_date,
+            'exp_date': item.product_id.exp_date,
+            'stock': item.product_id.stock,
         })
  
 
