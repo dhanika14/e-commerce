@@ -48,7 +48,11 @@
               <a href=""><img class="card-img-top img-fluid" style="height: 180px;width:180px;"
                   src="/media/{{i.product_img}}" alt=" /media/{{i.product_img}}"></a>
               <div class="card-body">
-                <h4 class="card-title pt-2"> <b>{{i.product_name}}</b></h4>
+                 <h4 class="card-title pt-2 pe-3 "
+                  style="display: block; width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                  title="{{ i.product_name }}">
+                  <span style="font-weight: bold;">{{ i.product_name }}</span>
+                </h4>
                 <p class="card-text text-primary">₹ {{i.sale}}.00 <del class="text-danger">₹ {{i.mrp}}.00</del></p>
                 <div class="d-flex">
                   <form action="/cart_submit/" method="POST">
