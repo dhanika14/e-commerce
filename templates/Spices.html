@@ -16,7 +16,7 @@
   {% block project %}
 
   <div class="container-fluid">
-    <h1 class="text-center">Spices</h1>
+    <h1 class="text-center pt-3">Spices</h1>
     <hr class="text-black">
     <div class="row">
 
@@ -26,7 +26,7 @@
         <ul style="list-style: none;">
           {% for i in category %}
           <hr class="text-black">
-              <li><a href="/{{ i.category_name }}/" class="btn" >{{ i.category_name }}</li></a>
+              <li><a href="/{{ i.category_name }}/" class="btn" ><b>{{ i.category_name }}</b></li></a>
 
               {% endfor %}
           
