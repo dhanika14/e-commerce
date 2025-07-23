@@ -13,7 +13,7 @@ from contactus.models import Contactus
 from product.models import Product
 from wishlist.models import Wishlist
 from cart.models import Cart
-
+from django.utils import timezone # type: ignore
 from checkout.models import Checkout
 from order.models import Order
 from django.contrib import messages # type: ignore
@@ -632,6 +632,7 @@ def shop(request):
         })
 
     categorydata = Category.objects.all()
+    stock=Product.objects.all()
     branddata = Brands.objects.all()
     wishlistdata = Wishlist.objects.filter(c_id=customer)
     productdata=Product.objects.all()
@@ -650,7 +651,7 @@ def shop(request):
         "cart": cart_items,
         "total_price": total_price,
         "wishlist": wishlistdata,
-
+"stock":stock,
         "plist":productdata,
 
        
@@ -756,9 +757,9 @@ def submit(request):
 def cart_submit(request):
     if request.method == "POST":
         product_id = request.POST.get("product_id")
-        cart_quantity = request.POST.get("cart_quantity", 1)
+        cart_quantity = int(request.POST.get("cart_quantity", 1))
         cart_price = request.POST.get("cart_price")
-        redirect_url = request.POST.get("redirect_url", "/")  # Default to homepage if not provided
+        redirect_url = request.POST.get("redirect_url", "/")
 
         c_id = request.session.get('user_id')
         if not c_id:
@@ -770,6 +771,13 @@ def cart_submit(request):
         except (Customer.DoesNotExist, Product.DoesNotExist):
             return redirect(redirect_url)
 
+        # ✅ Check if requested quantity is more than available stock
+        if product.stock < cart_quantity:
+            
+            messages.error(request, f"Only {product.stock} item(s) in stock.")
+            return redirect(redirect_url)
+
+        # ✅ All good, add to cart
         Cart.objects.create(
             product_id=product,
             c_id=customer,
@@ -780,7 +788,6 @@ def cart_submit(request):
         return redirect(redirect_url)
 
     return redirect("/")
-
 
 
 
@@ -988,7 +995,7 @@ def checkout(request):
        
         user_id = request.session.get('user_id')
         if not user_id:
-            return redirect("/")  # Ensure user is logged in
+            return redirect("/")
 
         try:
             customer = Customer.objects.get(c_id=user_id)
@@ -1001,12 +1008,11 @@ def checkout(request):
             messages.error(request, "Your cart is empty!")
             return redirect("/cart/")
 
-        # Delete previous orders to avoid duplication
+        # Optional: Delete previous orders to avoid duplication
         Order.objects.filter(c_id=customer).delete()
 
         # Create a new checkout entry
         checkout_entry = Checkout.objects.create(
-            
             first_name=first_name,
             email=email,
             telephone=phone,
@@ -1014,43 +1020,56 @@ def checkout(request):
             payment_method=payment_method,
             coupon_code=coupon_code,
             card_number=card_number,
-             agree_terms=agree_terms,
- )
+            agree_terms=agree_terms,
+        )
 
-        # Process cart items into orders
+        # Process cart items into orders and update stock
         for item in cart_items:
             cart_quantity = item.cart_quantity
             if cart_quantity is None or str(cart_quantity).strip() == "":
-                cart_quantity = 1  # Default to 1 if missing
+                cart_quantity = 1
+            quantity = int(cart_quantity)
 
-            Order.objects.create(
-                c_id=customer,
-                product_id=item.product_id,
-                price=item.cart_price,
-                quantity=int(cart_quantity),
-            )
+            product = item.product_id
+            original_stock = product.stock
+
+            if product.stock >= quantity:
+                product.stock -= quantity
+                product.save()
+
+                Order.objects.create(
+                    c_id=customer,
+                    product_id=product,
+                    price=item.cart_price,
+                    quantity=quantity,
+                    stock_at_order_time=original_stock,
+                    current_stock=product.stock,
+                    order_date=timezone.now()
+                )
+            else:
+                messages.error(request, f"Not enough stock for {product.product_name}.")
+                return redirect("/cart/")
 
         # Store checkout ID in session
         request.session['latest_checkout_id'] = checkout_entry.checkout_id
 
-        # Clear cart after checkout
+        # Clear cart after successful checkout
         cart_items.delete()
 
         messages.success(request, "Order placed successfully! Your bill is ready.")
-        return redirect("/thankyou/")  
+        return redirect("/thankyou/")
 
     else:
-        if 'user_id' not in request.session: 
-            return redirect("/")  
+        if 'user_id' not in request.session:
+            return redirect("/")
 
-    user_id = request.session.get('user_id')  
+    user_id = request.session.get('user_id')
 
     try:
         customer = Customer.objects.get(c_id=user_id)
     except Customer.DoesNotExist:
-        return redirect("/")  
+        return redirect("/")
 
-    # Fetch cart data for the logged-in customer
     cartdata = Cart.objects.filter(c_id=customer)
     cart_items = []
     total_price = 0
@@ -1058,12 +1077,12 @@ def checkout(request):
     if user_id:
         for item in cartdata:
             cart_quantity = str(item.cart_quantity).strip()
-            cart_quantity = int(cart_quantity) if cart_quantity.isdigit() else 1  # Ensure valid quantity
+            cart_quantity = int(cart_quantity) if cart_quantity.isdigit() else 1
 
             try:
                 sale_price = float(item.product_id.sale)
             except (ValueError, TypeError):
-                sale_price = 0.0  # Default to 0.0 if conversion fails
+                sale_price = 0.0
 
             item_total = cart_quantity * sale_price
             total_price += item_total
@@ -1075,13 +1094,11 @@ def checkout(request):
                 'sale_price': sale_price,
                 'total_price': item_total,
                 'cart_id': item.cart_id,
-                
             })
 
     categorydata = Category.objects.all()
     branddata = Brands.objects.all()
     wishlistdata = Wishlist.objects.filter(c_id=customer)
-
     user_name = request.session.get('user_name', None)
 
     data = {
@@ -1094,8 +1111,6 @@ def checkout(request):
     }
 
     return render(request, 'checkout.html', data)
-
-
 def bill(request):
     user_id = request.session.get('user_id')
     if not user_id:

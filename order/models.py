@@ -10,7 +10,7 @@ class Order(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     quantity = models.IntegerField(null=True)
     stock_at_order_time = models.IntegerField(null=True)
-    current_stock = models.IntegerField(null=True)  # 🆕 NEW FIELD
+    current_stock = models.IntegerField(null=True) 
     order_date = models.DateTimeField(default=timezone.now)
 
     class Meta:
